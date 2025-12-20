@@ -1,0 +1,24 @@
+model ChatGroup {
+    id         String       @id @default(uuid()) @db.Uuid
+    user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id    String
+    title      String       @db.VarChar(191)
+    passcode   String       @db.VarChar(30)
+    groupUsers GroupUsers[]
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+
+    @@index([createdAt])
+    @@map("chat_groups")
+}
+
+model GroupUsers {
+    id         Int       @id @default(autoincrement())
+    name       String
+    chat_group ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
+    group_id   String    @db.Uuid
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @updatedAt
+
+    @@map("group_users")
+}
