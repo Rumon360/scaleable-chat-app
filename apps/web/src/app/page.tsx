@@ -17,7 +17,7 @@ export default function Home() {
           </div>
           <div>
             <Link href={"/dashboard"}>
-              <Button size={"lg"} className={"text-base lg:text-lg py-4 px-4"}>
+              <Button size={"lg"} className={"text-base py-4 px-4"}>
                 Start now
               </Button>
             </Link>
