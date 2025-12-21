@@ -19,7 +19,7 @@ export default async function DashboardPage() {
     },
   });
 
-  if (!session?.user) {
+  if (!session) {
     redirect("/sign-in");
   }
 
