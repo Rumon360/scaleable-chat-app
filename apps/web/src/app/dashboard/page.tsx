@@ -4,12 +4,9 @@ import { redirect } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 import Dashboard from "./dashboard";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getAllChats } from "@/lib/queries";
+import { getQueryClient } from "@/lib/query-client";
 
 export default async function DashboardPage() {
   const session = await authClient.getSession({
@@ -23,7 +20,7 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  const queryClient = new QueryClient();
+  const queryClient = getQueryClient();
 
   void queryClient.prefetchQuery({
     queryKey: ["chat-groups"],
