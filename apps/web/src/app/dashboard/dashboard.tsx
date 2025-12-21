@@ -1,27 +1,34 @@
 "use client";
 
+import ChatCard from "@/components/chat/card";
 import CreateChat from "@/components/chat/create";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { authClient } from "@/lib/auth-client";
 
 import { getAllChats } from "@/lib/queries";
 
-import type { CreateChatForm } from "@/lib/types";
+import type { ChatGroupType } from "@/lib/types";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import EditDialog from "@/components/chat/edit-dialog";
+
+import { useState } from "react";
+import { DeleteDialog } from "@/components/chat/delete-dialog";
 
 interface DashboardTypes {
   session: typeof authClient.$Infer.Session;
 }
 
-type ChatDataSchema = CreateChatForm & {
-  id: string;
-};
-
 export default function Dashboard({ session }: DashboardTypes) {
+  const [selectedChat, setSelectedChat] = useState<{
+    type: "edit" | "del";
+    id: string;
+  } | null>(null);
+
   const {
     data: chats,
     isLoading,
@@ -32,6 +39,13 @@ export default function Dashboard({ session }: DashboardTypes) {
   });
 
   const hasChats = chats?.data && chats?.data.length > 0;
+
+  const handleSelectedChat = (type: "edit" | "del", id: string) => {
+    setSelectedChat({
+      type: type,
+      id: id,
+    });
+  };
 
   return (
     <div className="pt-8">
@@ -45,17 +59,12 @@ export default function Dashboard({ session }: DashboardTypes) {
           ))}
         {!isLoading &&
           hasChats &&
-          chats.data.map((chat: ChatDataSchema) => (
-            <Card
+          chats.data.map((chat: ChatGroupType) => (
+            <ChatCard
+              handleSelectedChat={handleSelectedChat}
               key={chat.id}
-              className="flex items-center bg-accent justify-center group cursor-pointer w-full sm:w-72 lg:w-80 aspect-[16/6]"
-            >
-              <CardContent>
-                <p className="text-base group-hover:text-blue-500 transition-colors text-center font-medium">
-                  {chat.title}
-                </p>
-              </CardContent>
-            </Card>
+              chat={chat}
+            />
           ))}
         {!isLoading && !hasChats && (
           <Card className="flex items-center bg-accent animate-pulse justify-center w-full sm:w-72 lg:w-80 aspect-[16/6]">
@@ -65,6 +74,17 @@ export default function Dashboard({ session }: DashboardTypes) {
           </Card>
         )}
         <CreateChat user={session.user} refetchChatGroups={refetchChatGroups} />
+        <EditDialog
+          chats={chats.data}
+          selectedChat={selectedChat}
+          refetchChatGroups={refetchChatGroups}
+          setSelectedChat={setSelectedChat}
+        />
+        <DeleteDialog
+          selectedChat={selectedChat}
+          refetchChatGroups={refetchChatGroups}
+          setSelectedChat={setSelectedChat}
+        />
       </div>
     </div>
   );

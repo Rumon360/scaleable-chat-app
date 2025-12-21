@@ -31,7 +31,7 @@ function CreateChat({ user, refetchChatGroups }: CreateChatTypes) {
 
   const mutation = useMutation({
     mutationFn: (data: CreateChatForm) => {
-      return createChat({ ...data, user_id: user.id });
+      return createChat(data);
     },
     onSuccess: (res) => {
       toast.success(res.data.message);
