@@ -1,9 +1,8 @@
-import { ChatGroupController } from "@/controllers/chat.controller";
-import { authMiddleware } from "@/middleware/auth.middleware";
 import { Router } from "express";
+import chatGroupRoutes from "@/routes/chat-groups/index";
 
 const router: Router = Router();
 
-router.post("/chat-group", authMiddleware, ChatGroupController.store);
+router.use("/chat-group", chatGroupRoutes);
 
 export default router;
