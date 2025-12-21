@@ -15,39 +15,65 @@ import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
-import z from "zod";
+import { useMutation } from "@tanstack/react-query";
+import { createChat } from "@/lib/queries";
+import { createChatSchema, type CreateChatForm } from "@/lib/types";
+import type { authClient } from "@/lib/auth-client";
+import { AxiosError } from "axios";
 
-function CreateChat() {
+interface CreateChatTypes {
+  user: typeof authClient.$Infer.Session.user;
+  refetchChatGroups: () => void;
+}
+
+function CreateChat({ user, refetchChatGroups }: CreateChatTypes) {
   const [open, setOpen] = useState(false);
+
+  const mutation = useMutation({
+    mutationFn: (data: CreateChatForm) => {
+      return createChat({ ...data, user_id: user.id });
+    },
+    onSuccess: (res) => {
+      toast.success(res.data.message);
+      refetchChatGroups();
+      setOpen(false);
+      form.reset();
+    },
+    onError: (error) => {
+      console.error(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.message);
+        return;
+      }
+      toast.error("Something went wrong!");
+    },
+  });
 
   const form = useForm({
     defaultValues: {
       title: "",
       passcode: "",
+    } as CreateChatForm,
+    validators: {
+      onSubmit: createChatSchema,
     },
     onSubmit: async ({ value }) => {
-      console.log(value);
-    },
-    validators: {
-      onSubmit: z.object({
-        title: z.string().min(2, "Title must be at least 2 characters"),
-        passcode: z.string().min(8, "Passcode must be at least 8 characters"),
-      }),
+      mutation.mutate(value);
     },
   });
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Card className="flex items-center justify-center group cursor-pointer aspect-[16/6]">
+        <Card className="flex items-center bg-accent justify-center group cursor-pointer w-full sm:w-72 lg:w-80 aspect-[16/6]">
           <CardContent>
             <p className="text-base group-hover:text-blue-500 transition-colors text-center font-medium">
-              Create Group
+              Create Chat
             </p>
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent aria-describedby="" className="sm:max-w-[425px]">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -70,6 +96,7 @@ function CreateChat() {
                     type="text"
                     value={field.state.value}
                     placeholder="Give a title"
+                    className="py-4"
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
@@ -90,6 +117,7 @@ function CreateChat() {
                     name={field.name}
                     type="text"
                     value={field.state.value}
+                    className="py-4"
                     placeholder="Passcode"
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}

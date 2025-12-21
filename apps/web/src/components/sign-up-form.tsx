@@ -31,7 +31,7 @@ export default function SignUpForm() {
           name: value.name,
         },
         {
-          onSuccess: () => {
+          onSuccess: (ctx) => {
             router.push("/dashboard");
             toast.success("Sign up successful");
           },

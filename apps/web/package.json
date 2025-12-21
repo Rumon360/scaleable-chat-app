@@ -25,6 +25,7 @@
     "@tanstack/react-query": "^5.90.12",
     "@radix-ui/react-dialog": "1.1.15",
     "@prisma/client": "catalog:",
+    "axios": "1.13.2",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "zod": "catalog:",

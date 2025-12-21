@@ -1,12 +1,16 @@
 import { auth } from "@scaleable-chat-app/auth";
 import prisma from "@scaleable-chat-app/db";
+import { fromNodeHeaders } from "better-auth/node";
 import { type Request, type Response } from "express";
 
 export class ChatGroupController {
   // Get All
-  static async index(_req: Request, res: Response) {
+  static async index(req: Request, res: Response) {
     try {
-      const data = await auth.api.getSession();
+      const data = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+
       if (data) {
         const user = data.user;
 
@@ -46,7 +50,10 @@ export class ChatGroupController {
   static async store(req: Request, res: Response) {
     try {
       const body = req.body;
-      const data = await auth.api.getSession();
+      const data = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+
       if (data) {
         const user = data?.user;
 
@@ -62,6 +69,7 @@ export class ChatGroupController {
       }
       return res.status(401).json({ error: "Unauthorized!" });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Somethign went wrong!" });
     }
   }
@@ -71,7 +79,9 @@ export class ChatGroupController {
     try {
       const { id } = req.params;
       const body = req.body;
-      const data = await auth.api.getSession();
+      const data = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
       if (data) {
         const user = data.user;
 
@@ -95,7 +105,9 @@ export class ChatGroupController {
   static async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const data = await auth.api.getSession();
+      const data = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
 
       if (data) {
         await prisma.chatGroup.delete({
