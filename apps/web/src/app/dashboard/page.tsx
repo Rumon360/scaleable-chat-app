@@ -21,10 +21,16 @@ export default async function DashboardPage() {
   }
 
   const queryClient = getQueryClient();
+  const cookie = (await headers()).get("cookie");
 
-  void queryClient.prefetchQuery({
+  await queryClient.prefetchQuery({
     queryKey: ["chat-groups"],
-    queryFn: getAllChats,
+    queryFn: () =>
+      getAllChats({
+        headers: {
+          Cookie: cookie,
+        },
+      }),
   });
 
   return (
