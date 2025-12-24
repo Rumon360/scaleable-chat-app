@@ -1,15 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
+const PROTECTED_ROUTES = ["/dashboard", "/chats"];
+const AUTH_ROUTES = ["/sign-in", "/sign-up"];
+
 export async function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   const { pathname } = request.nextUrl;
 
-  if (sessionCookie && (pathname === "/sign-in" || pathname === "/sign-up")) {
+  const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
+  const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  //  Redirect authenticated users away from auth routes
+  if (sessionCookie && isAuthRoute) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (!sessionCookie && pathname === "/dashboard") {
+  // Redirect unauthenticated users away from Protected routes
+  if (!sessionCookie && isProtectedRoute) {
     return NextResponse.redirect(new URL("/sign-in", request.url));
   }
 
@@ -17,5 +27,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/sign-in", "/sign-up"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
