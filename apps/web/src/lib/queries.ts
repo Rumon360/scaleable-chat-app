@@ -8,6 +8,7 @@ const queries = {
   createChatAPI: `${BASE_URL}/api/chat-group`,
   editChatAPI: `${BASE_URL}/api/chat-group`,
   getAllChats: `${BASE_URL}/api/chat-group`,
+  getChat: `${BASE_URL}/api/chat-group`,
 };
 
 export const createChat = async (data: CreateChatForm) => {
@@ -24,5 +25,10 @@ export const deleteChat = async (data: DeleteChatForm) => {
 
 export const getAllChats = async (config?: AxiosRequestConfig) => {
   const res = await api.get(queries.getAllChats, config);
+  return res.data;
+};
+
+export const getChat = async (chatId: string, config?: AxiosRequestConfig) => {
+  const res = await api.get(queries.getChat + `/${chatId}`, config);
   return res.data;
 };

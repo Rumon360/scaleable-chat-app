@@ -1,7 +1,7 @@
 "use client";
 
 import ChatCard from "@/components/chat/card";
-import CreateChat from "@/components/chat/create";
+import CreateChat from "@/components/chat/create-dialog";
 
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
