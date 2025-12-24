@@ -26,10 +26,11 @@
     "@scaleable-chat-app/config": "workspace:*"
   },
   "dependencies": {
-    "@prisma/client": "catalog:",
     "@prisma/adapter-pg": "^7.1.0",
-    "pg": "^8.16.3",
+    "@prisma/client": "catalog:",
     "dotenv": "catalog:",
+    "ioredis": "^5.8.2",
+    "pg": "^8.16.3",
     "zod": "catalog:"
   }
 }

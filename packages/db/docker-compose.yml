@@ -19,5 +19,30 @@ services:
       retries: 5
     restart: unless-stopped
 
+  redis:
+    image: redis/redis-stack:latest
+    container_name: scaleable-chat-app-redis
+    environment:
+      - REDIS_ARGS=--user admin on ~* +@all >password
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - scaleable-chat-app_redis_data:/data
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "redis-cli",
+          "-u",
+          "redis://admin:password@localhost:6379",
+          "ping",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 volumes:
   scaleable-chat-app_postgres_data:
+  scaleable-chat-app_redis_data:
