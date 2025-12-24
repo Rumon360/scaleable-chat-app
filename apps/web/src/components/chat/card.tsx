@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import type { ChatGroupType } from "@/lib/types";
+import { toast } from "sonner";
 
 type Props = {
   chat: ChatGroupType;
@@ -16,6 +17,19 @@ type Props = {
 };
 
 const ChatCard = ({ chat, handleSelectedChat }: Props) => {
+  const handleCopy = async () => {
+    const BASE_URL = process.env.NEXT_PUBLIC_URL!;
+    const url = BASE_URL + `/dashboard/${chat.id}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("URL copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy!");
+      console.error("[FAILED_TO_COPY]", err);
+    }
+  };
+
   return (
     <Card className="w-full sm:w-72 lg:w-80">
       <CardContent>
@@ -29,7 +43,9 @@ const ChatCard = ({ chat, handleSelectedChat }: Props) => {
               <MoreVertical className="w-4 h-4 text-muted-foreground" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem className="gap-2">Copy</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleCopy} className="gap-2">
+                Copy
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
                   handleSelectedChat("edit", chat.id);
