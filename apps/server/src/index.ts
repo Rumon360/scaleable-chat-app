@@ -5,21 +5,22 @@ import { type Request, type Response } from "express";
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
-
-import router from "./routes";
+import router from "@/routes/index";
+import { Server } from "socket.io";
+import { createServer } from "http";
+import { CORS_OPTIONS, PORT } from "@/config/options";
+import { setupSocket } from "@/socket/index";
 
 const app = express();
+const server = createServer(app);
+
+export const io = new Server(server, {
+  cors: CORS_OPTIONS,
+});
 
 app.use(morgan("dev"));
 
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+app.use(cors(CORS_OPTIONS));
 
 app.all("/api/auth{/*path}", toNodeHandler(auth));
 
@@ -52,7 +53,9 @@ app.use((err: any, _req: Request, res: Response) => {
   });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+// Setup Socket.io
+setupSocket(io);
+
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

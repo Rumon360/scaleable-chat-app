@@ -10,14 +10,15 @@
     "start": "bun run dist/index.js"
   },
   "dependencies": {
-    "express": "^5.1.0",
-    "cors": "^2.8.5",
-    "morgan": "1.10.1",
-    "better-auth": "catalog:",
-    "dotenv": "catalog:",
-    "zod": "catalog:",
     "@scaleable-chat-app/auth": "workspace:*",
-    "@scaleable-chat-app/db": "workspace:*"
+    "@scaleable-chat-app/db": "workspace:*",
+    "better-auth": "catalog:",
+    "cors": "^2.8.5",
+    "dotenv": "catalog:",
+    "express": "^5.1.0",
+    "morgan": "1.10.1",
+    "socket.io": "^4.8.3",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
