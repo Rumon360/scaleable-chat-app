@@ -31,8 +31,8 @@ export function DeleteDialog({
     mutationFn: (id: string) => deleteChat({ id: id }),
     onSuccess: () => {
       toast.success("Chat deleted successfully");
-      refetchChatGroups();
       handleClose();
+      refetchChatGroups();
     },
     onError: (error) => {
       const message =
