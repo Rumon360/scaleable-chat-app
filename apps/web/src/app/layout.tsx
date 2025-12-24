@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 
-import "../index.css";
+import "@/index.css";
 import Header from "@/components/header";
 import Providers from "@/components/providers";
 
