@@ -19,7 +19,7 @@ type Props = {
 const ChatCard = ({ chat, handleSelectedChat }: Props) => {
   const handleCopy = async () => {
     const BASE_URL = process.env.NEXT_PUBLIC_URL!;
-    const url = BASE_URL + `/dashboard/${chat.id}`;
+    const url = BASE_URL + `/chats/${chat.id}`;
 
     try {
       await navigator.clipboard.writeText(url);
