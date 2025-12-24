@@ -26,15 +26,19 @@ async function Chat({ params }: Props) {
   const queryClient = getQueryClient();
   const cookie = (await headers()).get("cookie");
 
-  await queryClient.prefetchQuery({
-    queryKey: ["chat-group", id],
-    queryFn: () =>
-      getChat(id, {
-        headers: {
-          Cookie: cookie,
-        },
-      }),
-  });
+  try {
+    await queryClient.fetchQuery({
+      queryKey: ["chat-group", id],
+      queryFn: () =>
+        getChat(id, {
+          headers: {
+            Cookie: cookie,
+          },
+        }),
+    });
+  } catch (error) {
+    redirect("/dashboard");
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
