@@ -7,7 +7,7 @@ const router: Router = Router();
 // Get All Chat Groups
 router.get("/", authMiddleware, ChatGroupController.index);
 // Get One Chat Group
-router.get("/:id", authMiddleware, ChatGroupController.show);
+router.get("/:id", ChatGroupController.show);
 // Create Chat Group
 router.post("/", authMiddleware, ChatGroupController.store);
 // Update Chat Group

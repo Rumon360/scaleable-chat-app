@@ -7,6 +7,7 @@ model ChatGroup {
     groupUsers GroupUsers[]
     createdAt  DateTime     @default(now())
     updatedAt  DateTime     @updatedAt
+    chats      Chats[]
 
     @@index([createdAt])
     @@map("chat_groups")
@@ -21,4 +22,19 @@ model GroupUsers {
     updatedAt  DateTime  @updatedAt
 
     @@map("group_users")
+}
+
+model Chats {
+    id      String  @id @default(uuid()) @db.Uuid
+    message String?
+    name    String
+
+    group    ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
+    group_id String    @db.Uuid
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([createdAt])
+    @@map("chats")
 }
