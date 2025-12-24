@@ -79,7 +79,6 @@ function EditDialog({
 
   const handleClose = () => {
     setSelectedChat(null);
-    form.reset();
   };
 
   return (
