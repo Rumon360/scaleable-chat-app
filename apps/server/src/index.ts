@@ -8,14 +8,23 @@ import morgan from "morgan";
 import router from "@/routes/index";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { CORS_OPTIONS, PORT } from "@/config/options";
+import { CORS_OPTIONS, PORT, SOCKET_CORS_OPTIONS } from "@/config/options";
 import { setupSocket } from "@/socket/index";
+import { instrument } from "@socket.io/admin-ui";
+import { createAdapter } from "@socket.io/redis-streams-adapter";
+import { redis } from "@scaleable-chat-app/db/redis";
 
 const app = express();
 const server = createServer(app);
 
 export const io = new Server(server, {
-  cors: CORS_OPTIONS,
+  cors: SOCKET_CORS_OPTIONS,
+  adapter: createAdapter(redis),
+});
+
+instrument(io, {
+  auth: false,
+  mode: "development",
 });
 
 app.use(morgan("dev"));

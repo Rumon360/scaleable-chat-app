@@ -12,6 +12,8 @@
   "dependencies": {
     "@scaleable-chat-app/auth": "workspace:*",
     "@scaleable-chat-app/db": "workspace:*",
+    "@socket.io/admin-ui": "^0.5.1",
+    "@socket.io/redis-streams-adapter": "^0.2.3",
     "better-auth": "catalog:",
     "cors": "^2.8.5",
     "dotenv": "catalog:",
