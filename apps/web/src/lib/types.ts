@@ -29,7 +29,7 @@ export const groupChatUserType = z.object({
 });
 
 export const messageType = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   group_id: z.string(),
   message: z.string(),
 });
