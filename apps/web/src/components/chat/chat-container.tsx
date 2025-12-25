@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Send, Hash, Menu, Loader2 } from "lucide-react";
 
@@ -21,11 +20,11 @@ import type { MessageType } from "@/lib/types";
 
 type Props = {
   chatId: string;
-  session: typeof authClient.$Infer.Session | null;
+  session: typeof authClient.$Infer.Session;
 };
 
 function ChatContainer({ chatId, session }: Props) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<MessageType>>([]);
 
@@ -60,11 +59,10 @@ function ChatContainer({ chatId, session }: Props) {
   }, []);
 
   useEffect(() => {
-    if (chat.data.user_id === session?.user.id) {
-      setOpen(false);
-      return;
+    if (chat.data.isNotMember) {
+      setOpen(true);
     }
-  }, []);
+  }, [chat.data]);
 
   useEffect(() => {
     socket.on("message", (data: MessageType) => {
@@ -127,9 +125,9 @@ function ChatContainer({ chatId, session }: Props) {
                       )}
                     >
                       <div className="flex items-center gap-2 mb-1.5 px-1">
-                        {!isMe && (
+                        {/* {!isMe && (
                           <span className="text-[11px] font-bold text-primary">
-                            {msg.name}
+                            {msg.}
                           </span>
                         )}
                         <span className="text-[10px] text-muted-foreground uppercase tracking-tighter">
@@ -139,7 +137,7 @@ function ChatContainer({ chatId, session }: Props) {
                           <span className="text-[11px] font-bold text-muted-foreground ml-1">
                             You
                           </span>
-                        )}
+                        )} */}
                       </div>
 
                       <div
