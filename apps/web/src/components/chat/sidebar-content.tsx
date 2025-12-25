@@ -14,18 +14,20 @@ function SidebarContent({ participants }: Props) {
             Members
           </p>
           <div className="px-4 py-2 space-y-2">
-            {participants.map((user) => (
+            {participants.map((participant: any) => (
               <button
-                key={user.name}
+                key={participant.id}
                 className="w-full flex items-center gap-3 px-3 py-2.5 bg-background group border border-border shadow-sm"
               >
                 <div className="text-left overflow-hidden">
                   <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
-                    {user.name}
+                    {participant.user.name}
                   </p>
                   <p className="text-xs">
                     Joined:{" "}
-                    <span>{new Date(user.createdAt).toDateString()}</span>
+                    <span>
+                      {new Date(participant.createdAt).toDateString()}
+                    </span>
                   </p>
                 </div>
               </button>
