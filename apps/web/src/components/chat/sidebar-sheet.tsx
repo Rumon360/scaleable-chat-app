@@ -13,11 +13,11 @@ function SidebarSheet({ participants }: Props) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
+        <Button variant="secondary" size="icon" className="md:hidden">
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 w-72">
+      <SheetContent side="right" className="p-0 w-72">
         <SidebarContent participants={participants} />
       </SheetContent>
     </Sheet>
