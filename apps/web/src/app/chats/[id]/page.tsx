@@ -20,6 +20,10 @@ async function Chat({ params }: Props) {
     },
   });
 
+  if (!session) {
+    redirect("/sign-in");
+  }
+
   const queryClient = getQueryClient();
   const cookie = (await headers()).get("cookie");
 
