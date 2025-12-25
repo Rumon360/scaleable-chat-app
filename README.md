@@ -10,6 +10,8 @@
 - **Bun** - Runtime environment
 - **Prisma** - TypeScript-first ORM
 - **PostgreSQL** - Database engine
+- **Redis & Redis Streams** - Uses @socket.io/redis-streams-adapter for multi-node horizontal scaling
+- **BullMQ** - Message queue for reliable, asynchronous background processing (DB persistence)
 - **Authentication** - Better-Auth
 - **Biome** - Linting and formatting
 - **Turborepo** - Optimized monorepo build system
