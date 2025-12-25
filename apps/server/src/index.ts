@@ -13,6 +13,7 @@ import { setupSocket } from "@/socket/index";
 import { instrument } from "@socket.io/admin-ui";
 import { createAdapter } from "@socket.io/redis-streams-adapter";
 import { redis } from "@scaleable-chat-app/db/redis";
+import { setupWorkers } from "@/workers/index";
 
 const app = express();
 const server = createServer(app);
@@ -64,6 +65,9 @@ app.use((err: any, _req: Request, res: Response) => {
 
 // Setup Socket.io
 setupSocket(io);
+
+// Start the Worker process
+setupWorkers();
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
