@@ -7,12 +7,14 @@ const router: Router = Router();
 // Get All Chat Groups
 router.get("/", authMiddleware, ChatGroupController.index);
 // Get One Chat Group
-router.get("/:id", ChatGroupController.show);
+router.get("/:id", authMiddleware, ChatGroupController.show);
 // Create Chat Group
 router.post("/", authMiddleware, ChatGroupController.store);
 // Update Chat Group
 router.put("/:id", authMiddleware, ChatGroupController.update);
 // Delete Chat Group
 router.delete("/:id", authMiddleware, ChatGroupController.delete);
+// Join group chat
+router.post("/join", authMiddleware, ChatGroupController.join_room);
 
 export default router;
