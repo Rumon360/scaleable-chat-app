@@ -38,6 +38,7 @@ async function Chat({ params }: Props) {
         }),
     });
   } catch (error) {
+    console.log(error);
     notFound();
   }
 

@@ -1,3 +1,4 @@
+import { addMessageToQueue } from "@/queues";
 import { auth } from "@scaleable-chat-app/auth";
 import prisma from "@scaleable-chat-app/db";
 import { fromNodeHeaders } from "better-auth/node";
@@ -15,25 +16,30 @@ export const setupSocket = (io: Server) => {
         headers: fromNodeHeaders(socket.handshake.headers),
       });
 
-      if (!session || !session.user) {
-        return next(new Error("Unauthorized: Invalid Session"));
+      if (!session?.user) {
+        return next(new Error("UNAUTHORIZED"));
       }
 
-      const room = socket.handshake.auth.room;
+      const roomId = socket.handshake.auth.room;
 
-      const chat_room = await prisma.chatGroup.findUnique({
-        where: { id: room },
+      if (!roomId) {
+        return next(new Error("ROOM_ID_REQUIRED"));
+      }
+
+      const chatGroup = await prisma.chatGroup.findUnique({
+        where: { id: roomId },
       });
 
-      if (!room || !chat_room) {
-        return next(new Error("Invalid Room!"));
+      if (!chatGroup) {
+        return next(new Error("ROOM_NOT_FOUND"));
       }
 
       (socket as CustomSocket).user = session.user;
-      (socket as CustomSocket).room = room;
+      (socket as CustomSocket).room = roomId;
 
       next();
     } catch (error) {
+      console.error("[AUTH_MIDDLEWARE_ERROR]", error);
       next(new Error("Internal Server Error during Auth"));
     }
   });
@@ -46,13 +52,36 @@ export const setupSocket = (io: Server) => {
 
     console.log("[SOCKET_CONNECTED]", socket.id);
 
-    socket.on("message", (data) => {
-      console.log("ON_MESSAGE_RECIEVED", data);
-      io.to(customSocket.room).emit("message", data);
+    socket.on("message", async (data) => {
+      const payload = {
+        ...data,
+        from_id: customSocket.user.id,
+      };
+
+      io.to(customSocket.room).emit("message", {
+        ...payload,
+        from: {
+          name: customSocket.user.name,
+          email: customSocket.user.email,
+        },
+      });
+
+      try {
+        await addMessageToQueue(payload);
+      } catch (error) {
+        console.error(
+          `[QUEUE_ERROR] User:${customSocket.user.id} Room:${customSocket.room}`,
+          error
+        );
+      }
     });
 
-    socket.on("disconnect", () => {
-      console.log("[SOCKET_DISCONNECTED]", socket.id);
+    socket.on("disconnect", (reason) => {
+      if (reason === "ping timeout") {
+        console.warn(
+          `[SOCKET_TIMEOUT] ${socket.id} for user ${customSocket.user.id}`
+        );
+      }
     });
   });
 };

@@ -3,13 +3,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import type { MessageType } from "@/lib/types";
 
-export default function MessageList({
-  messages,
-  currentUserId,
-}: {
+type Props = {
   messages: MessageType[];
   currentUserId: string;
-}) {
+};
+
+export default function MessageList({ messages, currentUserId }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,10 +16,10 @@ export default function MessageList({
   }, [messages]);
 
   return (
-    <ScrollArea className="flex-1 p-4 md:p-8">
+    <ScrollArea className="flex-1 p-4 md:p-8 h-[80vh]">
       <div className="max-w-2xl mx-auto space-y-6">
-        {messages.map((msg: any) => {
-          const isMe = msg.user_id === currentUserId;
+        {messages.map((msg: MessageType) => {
+          const isMe = msg.from_id === currentUserId;
           return (
             <div
               key={msg.id}
@@ -31,7 +30,7 @@ export default function MessageList({
             >
               <div className="flex items-center gap-2 mb-1.5 px-1">
                 <span className="text-[11px] font-bold text-muted-foreground">
-                  {isMe ? "You" : msg.user?.name}
+                  {isMe ? "You" : msg.from.name}
                 </span>
                 <span className="text-[10px] text-muted-foreground uppercase">
                   {new Date(msg.createdAt).toLocaleTimeString([], {

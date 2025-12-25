@@ -51,7 +51,7 @@ export default function ChatContainer({ chatId, session }: Props) {
   }, [socket]);
 
   const handleSendMessage = (content: string) => {
-    const payload: MessageType = {
+    const payload = {
       id: uuidv4(),
       message: content,
       group_id: chat.data.id,

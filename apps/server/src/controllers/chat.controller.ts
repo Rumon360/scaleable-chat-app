@@ -20,7 +20,18 @@ export class ChatGroupController {
         const user = data.user;
 
         const groups = await prisma.chatGroup.findMany({
-          where: { owner_id: user.id },
+          where: {
+            OR: [
+              { owner_id: user.id },
+              {
+                groupUsers: {
+                  some: {
+                    user_id: user.id,
+                  },
+                },
+              },
+            ],
+          },
           orderBy: { createdAt: "desc" },
         });
 
@@ -58,8 +69,13 @@ export class ChatGroupController {
               user: { select: { name: true, email: true } },
             },
             omit: { group_id: true },
+            orderBy: { createdAt: "desc" },
           },
-          chats: { include: { from: { select: { name: true, email: true } } } },
+          chats: {
+            include: { from: { select: { name: true, email: true } } },
+            omit: { group_id: true },
+            orderBy: { createdAt: "asc" },
+          },
         },
       });
 
@@ -87,6 +103,7 @@ export class ChatGroupController {
         data: group,
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Somethign went wrong!" });
     }
   }
