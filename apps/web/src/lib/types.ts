@@ -31,10 +31,7 @@ export const groupChatUserType = z.object({
 export const messageType = z.object({
   id: z.string(),
   group_id: z.string(),
-  name: z.string(),
   message: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
 });
 
 export type CreateChatForm = z.infer<typeof createChatSchema>;
