@@ -59,6 +59,7 @@ export class ChatGroupController {
             },
             omit: { group_id: true },
           },
+          chats: { include: { from: { select: { name: true, email: true } } } },
         },
       });
 
