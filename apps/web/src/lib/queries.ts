@@ -1,4 +1,9 @@
-import type { CreateChatForm, DeleteChatForm, EditChatForm } from "@/lib/types";
+import type {
+  CreateChatForm,
+  DeleteChatForm,
+  EditChatForm,
+  JoinChatSchema,
+} from "@/lib/types";
 import { api } from "@/lib/axios";
 import type { AxiosRequestConfig } from "axios";
 
@@ -9,6 +14,7 @@ const queries = {
   editChatAPI: `${BASE_URL}/api/chat-group`,
   getAllChats: `${BASE_URL}/api/chat-group`,
   getChat: `${BASE_URL}/api/chat-group`,
+  joinChat: `${BASE_URL}/api/chat-group/join`,
 };
 
 export const createChat = async (data: CreateChatForm) => {
@@ -31,4 +37,8 @@ export const getAllChats = async (config?: AxiosRequestConfig) => {
 export const getChat = async (chatId: string, config?: AxiosRequestConfig) => {
   const res = await api.get(queries.getChat + `/${chatId}`, config);
   return res.data;
+};
+
+export const joinChat = async (data: JoinChatSchema) => {
+  return api.post(queries.joinChat, data);
 };
