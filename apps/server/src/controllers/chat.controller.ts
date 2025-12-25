@@ -38,12 +38,39 @@ export class ChatGroupController {
   // Get One
   static async show(req: Request, res: Response) {
     try {
+      const data = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers),
+      });
+
+      if (!data?.user) {
+        return res.status(401).json({ error: "Unauthorized!" });
+      }
+
       const { id } = req.params;
+      const userId = data.user.id;
 
       const group = await prisma.chatGroup.findUnique({
         where: { id: id },
-        include: { groupUsers: true },
+        include: {
+          groupUsers: true,
+        },
       });
+
+      if (!group) {
+        return res.status(404).json({ message: "Chat group not found!" });
+      }
+
+      // Check if user is owner OR if user exists in the groupUsers array
+      const isOwner = group.owner_id === userId;
+      const isMember = group.groupUsers.some(
+        (member) => member.user_id === userId
+      );
+
+      if (!isOwner && !isMember) {
+        return res
+          .status(403)
+          .json({ message: "You do not have access to this group!" });
+      }
 
       return res.json({
         message: "Chat group fetched successfully!",
