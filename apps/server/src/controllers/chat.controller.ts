@@ -52,7 +52,9 @@ export class ChatGroupController {
       const group = await prisma.chatGroup.findUnique({
         where: { id: id },
         include: {
-          groupUsers: true,
+          groupUsers: {
+            include: { user: { select: { name: true, email: true } } },
+          },
         },
       });
 
