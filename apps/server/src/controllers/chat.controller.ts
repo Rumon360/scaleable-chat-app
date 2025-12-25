@@ -60,16 +60,19 @@ export class ChatGroupController {
         return res.status(404).json({ message: "Chat group not found!" });
       }
 
-      // Check if user is owner OR if user exists in the groupUsers array
       const isOwner = group.owner_id === userId;
       const isMember = group.groupUsers.some(
         (member) => member.user_id === userId
       );
 
       if (!isOwner && !isMember) {
-        return res
-          .status(403)
-          .json({ message: "You do not have access to this group!" });
+        return res.status(200).json({
+          data: {
+            ...group,
+            isNotMember: true,
+          },
+          message: "Access restricted: Join required.",
+        });
       }
 
       return res.json({
