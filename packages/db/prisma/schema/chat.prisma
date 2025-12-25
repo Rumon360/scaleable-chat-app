@@ -1,33 +1,43 @@
 model ChatGroup {
-    id         String       @id @default(uuid()) @db.Uuid
-    user       User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
-    user_id    String
-    title      String       @db.VarChar(191)
-    passcode   String       @db.VarChar(30)
+    id       String @id @default(uuid()) @db.Uuid
+    title    String @db.VarChar(191)
+    passcode String @db.VarChar(30)
+
+    owner    User   @relation("GroupOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+    owner_id String
+
     groupUsers GroupUsers[]
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
     chats      Chats[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     @@index([createdAt])
     @@map("chat_groups")
 }
 
 model GroupUsers {
-    id         Int       @id @default(autoincrement())
-    name       String
-    chat_group ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
-    group_id   String    @db.Uuid
-    createdAt  DateTime  @default(now())
-    updatedAt  DateTime  @updatedAt
+    id Int @id @default(autoincrement())
 
+    group    ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
+    group_id String    @db.Uuid
+
+    user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id String
+
+    role String @default("member")
+
+    createdAt DateTime @default(now())
+
+    @@unique([group_id, user_id])
     @@map("group_users")
 }
 
 model Chats {
-    id      String  @id @default(uuid()) @db.Uuid
-    message String?
-    name    String
+    id      String @id @default(uuid()) @db.Uuid
+    message String @db.Text
+    from    User   @relation(fields: [from_id], references: [id], onDelete: Cascade)
+    from_id String
 
     group    ChatGroup @relation(fields: [group_id], references: [id], onDelete: Cascade)
     group_id String    @db.Uuid

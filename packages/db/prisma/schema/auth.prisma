@@ -1,14 +1,16 @@
 model User {
-  id            String      @id
-  name          String
-  email         String
-  emailVerified Boolean     @default(false)
-  image         String?
-  chatGroups    ChatGroup[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id               String       @id
+  name             String
+  email            String
+  emailVerified    Boolean      @default(false)
+  image            String?
+  ownedGroups      ChatGroup[]  @relation("GroupOwner")
+  groupMemberships GroupUsers[]
+  chats            Chats[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  sessions         Session[]
+  accounts         Account[]
 
   @@unique([email])
   @@map("user")
